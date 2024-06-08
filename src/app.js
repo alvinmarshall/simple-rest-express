@@ -1,23 +1,25 @@
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+import path from 'path';
+import { fileURLToPath } from 'url';
+import express, { json,urlencoded } from 'express';
+import logger from 'morgan'
+import cookieParser from 'cookie-parser'
+import userRouter from "./user/user-router.js";
+import exceptionMiddleware from './error/exception-middleware.js'
 
-var indexRouter = require('./routes');
-var usersRouter = require('./routes/users');
+const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
+const __dirname = path.dirname(__filename);
 
-var app = express();
-
+const app = express();
+app.use(json())
 app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+const PORT = process.env.PORT || 3000;
 
-app.listen(3000,()=>{
-    console.log("server started....")
-})
-module.exports = app;
+app.use('/',userRouter)
+app.use(exceptionMiddleware)
+
+
+app.listen(PORT, () => console.log(`App listening at port ${PORT}`));
