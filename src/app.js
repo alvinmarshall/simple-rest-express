@@ -1,6 +1,6 @@
 import path from 'path';
-import { fileURLToPath } from 'url';
-import express, { json,urlencoded } from 'express';
+import {fileURLToPath} from 'url';
+import express, {json, urlencoded} from 'express';
 import logger from 'morgan'
 import cookieParser from 'cookie-parser'
 import userRouter from "./user/user-router.js";
@@ -13,13 +13,10 @@ const app = express();
 app.use(json())
 app.use(logger('dev'));
 app.use(cookieParser());
-app.use(urlencoded({ extended: false }));
+app.use(urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
 
-const PORT = process.env.PORT || 3000;
-
-app.use('/',userRouter)
+app.use('/', userRouter)
 app.use(exceptionMiddleware)
 
-
-app.listen(PORT, () => console.log(`App listening at port ${PORT}`));
+export default app;
